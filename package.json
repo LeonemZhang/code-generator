@@ -2,24 +2,45 @@
   "name": "code-generator",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "type": "commonjs",
+  "main": "main.js",
   "scripts": {
-    "dev": "vite --open",
+    "start": "npm run build && npm run electron:start",
+    "dev": "concurrently -k \"vite\" \"npm run electron:dev\"",
+    "web": "vite --open",
     "build": "vite build",
-    "preview": "vite preview",
-    "iconfont": "node ./src/utils/iconfont.cjs"
+    "iconfont": "node ./src/utils/iconfont.cjs",
+    "electron:start": "cross-env IS_DEV=false electron-forge start",
+    "electron:dev": "cross-env IS_DEV=true electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make --platform=win32 --arch=x64 --targets=zip"
+  },
+  "config": {
+    "forge": {
+      "arch": "x64"
+    }
   },
   "dependencies": {
     "antd": "^5.2.2",
+    "electron-squirrel-startup": "^1.0.0",
     "nanoid": "^4.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.5",
+    "@electron-forge/maker-deb": "^6.0.5",
+    "@electron-forge/maker-rpm": "^6.0.5",
+    "@electron-forge/maker-squirrel": "^6.0.5",
+    "@electron-forge/maker-zip": "^6.0.5",
     "@types/node": "^18.14.1",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react": "^3.1.0",
+    "concurrently": "^7.6.0",
+    "cross-env": "^7.0.3",
+    "electron": "^23.1.1",
+    "electron-builder": "^23.6.0",
     "sass": "^1.58.3",
     "vite": "^4.1.0",
     "webpack-iconfont-plugin-nodejs": "^1.0.29"
