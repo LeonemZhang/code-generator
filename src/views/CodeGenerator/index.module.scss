@@ -1,0 +1,12 @@
+.codegenerator {
+  width: 100vw;
+  height: 100vh;
+  //   padding: 5vh 10vw;
+  box-sizing: border-box;
+  //   background-color: antiquewhite;
+  display: flex;
+  flex-direction: column;
+  .bottom {
+    padding: 5% 10%;
+  }
+}

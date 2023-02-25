@@ -1,0 +1,11 @@
+@import "@/styles/variable.scss";
+.footer {
+  width: 100%;
+  height: $footerHeight;
+  // background-color: aquamarine;
+  margin-top: 20px;
+  border-bottom: 1px solid rgb(240, 240, 240);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

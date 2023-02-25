@@ -1,0 +1,20 @@
+@font-face {
+    font-family: icon;
+    src: url("icon.woff?110aac7d") format("woff"),
+             url("icon.ttf?110aac7d") format("truetype"); 
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon"], [class*=" icon"] {
+    font-family: 'icon' !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-style: normal;
+}
+
+
+.icon-react::before {
+    content: "\554a";
+}
+

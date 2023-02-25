@@ -1,0 +1,31 @@
+@import "@/styles/variable.scss";
+.content {
+  //   flex-grow: 1;
+  box-sizing: border-box;
+
+  .container {
+    width: 100%;
+    height: 100%;
+    border: $borderStyle;
+    box-shadow: $shadowStyle;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    .inputcontainer {
+      width: 100%;
+      height: 60px;
+      form {
+        height: 100%;
+        justify-content: space-around;
+        align-items: center;
+      }
+    }
+    .editablerow {
+      .ant-form-item-explain {
+        position: absolute;
+        top: 100%;
+        font-size: 12px;
+      }
+    }
+  }
+}
