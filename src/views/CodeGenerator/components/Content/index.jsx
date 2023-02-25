@@ -8,7 +8,7 @@ export default class Content extends Component {
     tableData: [
       {
         key: nanoid(),
-        filed: "",
+        field: "",
         type: "",
         nullable: "",
         default: "",
@@ -16,10 +16,23 @@ export default class Content extends Component {
       },
     ],
   };
+  addRow = () => {
+    const oldData = this.state.tableData;
+    oldData.push({
+      key: nanoid(),
+      field: "",
+      type: "",
+      nullable: "",
+      default: "",
+      comment: "",
+    });
+    console.log(oldData);
+    this.setState({ tableData: JSON.parse(JSON.stringify(oldData)) });
+  };
   isEditing = (record) => record.key === this.state.editingKey;
   edit = (record) => {
     this.form.setFieldsValue({
-      filed: "",
+      field: "",
       type: "",
       nullable: "",
       default: "",
@@ -54,7 +67,7 @@ export default class Content extends Component {
   columns = [
     {
       title: "类属性名",
-      dataIndex: "filed",
+      dataIndex: "field",
       width: "20%",
       editable: true,
     },
@@ -197,26 +210,30 @@ export default class Content extends Component {
               </Form.Item> */}
             </Form>
           </div>
-          <Form
-            component={false}
-            ref={(c) => {
-              this.form = c;
-            }}
-          >
-            <Table
-              components={{
-                body: {
-                  cell: this.EditableCell,
-                },
+          <div className={styles.tablecontainer}>
+            <Form
+              component={false}
+              ref={(c) => {
+                this.form = c;
               }}
-              bordered
-              dataSource={this.state.tableData}
-              columns={this.mergedColumns}
-              rowClassName={styles.editablerow}
-            ></Table>
-          </Form>
+            >
+              <Table
+                components={{
+                  body: {
+                    cell: this.EditableCell,
+                  },
+                }}
+                bordered
+                dataSource={this.state.tableData}
+                columns={this.mergedColumns}
+                rowClassName={styles.editablerow}
+                pagination={false}
+                scroll={{ y: "calc(100vh - 500px)" }}
+              ></Table>
+            </Form>
+          </div>
 
-          {/* <Button onClick={this.getValue}>测试</Button> */}
+          <Button onClick={this.addRow}>添加行</Button>
         </div>
       </div>
     );
