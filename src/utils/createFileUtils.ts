@@ -48,7 +48,7 @@ async function createJavaFile(classInfo: ClassInfo, fieldList: FieldLine[]) {
  * 生成数据库实体类
  */
 function createDbJavaFile(classInfo: ClassInfo, fieldList: FieldLine[]): void {
-    fs.readFile("./template/Db.txt", (err, data) => {
+    fs.readFile("src/template/Db.txt", (err, data) => {
         if (err) {
             console.log(err)
             return
@@ -67,7 +67,7 @@ function createDbJavaFile(classInfo: ClassInfo, fieldList: FieldLine[]): void {
  * 生成实体Dao类
  */
 function createDaoJavaFile(classInfo: ClassInfo): void {
-    fs.readFile("./template/DbRepository.txt", (err, data) => {
+    fs.readFile("src/template/DbRepository.txt", (err, data) => {
         if (err) {
             console.log(err)
             return
@@ -85,7 +85,7 @@ function createDaoJavaFile(classInfo: ClassInfo): void {
  * 生成Controller类
  */
 function createControllerJavaFile(classInfo: ClassInfo): void {
-    fs.readFile("./template/Controller.txt", (err, data) => {
+    fs.readFile("src/template/Controller.txt", (err, data) => {
         if (err) {
             console.log(err)
             return
@@ -103,7 +103,7 @@ function createControllerJavaFile(classInfo: ClassInfo): void {
  * 生成Service类
  */
 function createServiceJavaFile(classInfo: ClassInfo): void {
-    fs.readFile("./template/Service.txt", (err, data) => {
+    fs.readFile("src/template/Service.txt", (err, data) => {
         if (err) {
             console.log(err)
             return
@@ -121,7 +121,7 @@ function createServiceJavaFile(classInfo: ClassInfo): void {
  * 生成ServiceImpl类
  */
 function createServiceImplJavaFile(classInfo: ClassInfo): void {
-    fs.readFile("./template/ServiceImpl.txt", (err, data) => {
+    fs.readFile("src/template/ServiceImpl.txt", (err, data) => {
         if (err) {
             console.log(err)
             return
@@ -139,7 +139,7 @@ function createServiceImplJavaFile(classInfo: ClassInfo): void {
  * 生成AddReq类
  */
 function createAddReqJavaFile(classInfo: ClassInfo, fieldList: FieldLine[]): void {
-    fs.readFile("./template/AddReq.txt", (err, data) => {
+    fs.readFile("src/template/AddReq.txt", (err, data) => {
         if (err) {
             console.log(err)
             return
@@ -158,7 +158,7 @@ function createAddReqJavaFile(classInfo: ClassInfo, fieldList: FieldLine[]): voi
  * 生成EditReq类
  */
 function createEditReqJavaFile(classInfo: ClassInfo): void {
-    fs.readFile("./template/EditReq.txt", (err, data) => {
+    fs.readFile("src/template/EditReq.txt", (err, data) => {
         if (err) {
             console.log(err)
             return
@@ -176,7 +176,7 @@ function createEditReqJavaFile(classInfo: ClassInfo): void {
  * 生成GetPageReq类
  */
 function createGetPageReqJavaFile(classInfo: ClassInfo): void {
-    fs.readFile("./template/GetPageReq.txt", (err, data) => {
+    fs.readFile("src/template/GetPageReq.txt", (err, data) => {
         if (err) {
             console.log(err)
             return
@@ -194,7 +194,7 @@ function createGetPageReqJavaFile(classInfo: ClassInfo): void {
  * 生成DetailVo类
  */
 function createDetailVoJavaFile(classInfo: ClassInfo, fieldList: FieldLine[]): void {
-    fs.readFile("./template/DetailVo.txt", (err, data) => {
+    fs.readFile("src/template/DetailVo.txt", (err, data) => {
         if (err) {
             console.log(err)
             return
@@ -213,7 +213,7 @@ function createDetailVoJavaFile(classInfo: ClassInfo, fieldList: FieldLine[]): v
  * 生成PageVo类
  */
 function createPageVoJavaFile(classInfo: ClassInfo, fieldList: FieldLine[]): void {
-    fs.readFile("./template/PageVo.txt", async (err, data) => {
+    fs.readFile("src/template/PageVo.txt", async (err, data) => {
         if (err) {
             console.log(err)
             return
