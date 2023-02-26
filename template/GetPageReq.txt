@@ -1,0 +1,28 @@
+package $package_path$.pojo.req.$class_name_lower_case$;
+
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+
+/**
+ * 分页获取$chinese_name$数据请求类
+ */
+@Getter
+@Setter
+public class Get$class_name$PageReq {
+
+    
+    @NotNull(message = "页码不能为空")
+    @Min(value = 1, message = "页码不能小于1")
+    @ApiModelProperty(value = "页码", required = true, example = "1")
+    private Integer page;
+
+    @NotNull(message = "每页显示条数不能为空")
+    @Min(value = 1, message = "每页显示条数不能小于1")
+    @ApiModelProperty(value = "每页显示条数", required = true, example = "10")
+    private Integer pageSize;
+}

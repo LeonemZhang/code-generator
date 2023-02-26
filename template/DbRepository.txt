@@ -1,0 +1,8 @@
+package $package_path$.dao;
+
+import $package_path$.entity.Db$class_name$;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+public interface Db$class_name$Repository extends JpaRepository<Db$class_name$, Long>, JpaSpecificationExecutor<Db$class_name$> {
+}
