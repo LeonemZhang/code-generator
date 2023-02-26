@@ -9,6 +9,7 @@ import {
   Typography,
 } from "antd";
 import { nanoid } from "nanoid";
+import { createJavaFile } from "@/utils/createFileUtils.ts";
 import React, { Component } from "react";
 import styles from "./index.module.scss";
 export default class Content extends Component {
@@ -25,7 +26,14 @@ export default class Content extends Component {
       },
     ],
   };
-  componentDidMount = () => {};
+  componentDidMount = () => {
+    this.classForm.setFieldsValue({
+      className: "MyClass",
+      chineseName: "我的类",
+      projectPath: "C:\\Users\\10480\\Desktop\\workSpace\\artifact",
+      packagePath: "com.cn.cnm",
+    });
+  };
   addRow = () => {
     const oldData = this.state.tableData;
     oldData.push({
@@ -225,23 +233,29 @@ export default class Content extends Component {
     };
   });
   onFinish = (values) => {
-    console.log(values);
+    // console.log(values);
   };
   onValuesChange = (changedValues, allValues) => {
-    console.log(allValues);
+    // console.log(allValues);
   };
-  // getValue = () => {
-  //   console.log(this.tableForm.getFieldsValue());
-  // };
+  generateCode = () => {
+    const classInfo = this.classForm.getFieldsValue();
+    const fieldList = this.state.tableData;
+    console.log({
+      classInfo,
+      fieldList,
+    });
+    createJavaFile(classInfo, fieldList);
+  };
 
   handleSaveClick = async (event) => {
     const { dialog } = require("@electron/remote");
     const result = await dialog.showOpenDialog({
       properties: ["openDirectory"],
     });
-    console.log(result.filePaths[0]);
-    console.log(this.classForm);
-    this.classForm.setFieldsValue({ projectPath: result.filePaths[0] });
+    this.classForm.setFieldsValue({
+      projectPath: `${result.filePaths[0]}\\artifact`,
+    });
   };
   render() {
     return (
@@ -256,10 +270,10 @@ export default class Content extends Component {
               onFinish={this.onFinish}
               onValuesChange={this.onValuesChange}
             >
-              <Form.Item label="英文类名" name="englishClassName">
+              <Form.Item label="英文类名" name="className">
                 <Input placeholder="Class"></Input>
               </Form.Item>
-              <Form.Item label="中文类名" name="chineseClassName">
+              <Form.Item label="中文类名" name="chineseName">
                 <Input placeholder="中文名"></Input>
               </Form.Item>
               <Form.Item label="项目路径" name="projectPath">
@@ -269,7 +283,7 @@ export default class Content extends Component {
                 ></Input>
               </Form.Item>
               {/* <Button onClick={this.handleSaveClick}>Save File</Button> */}
-              <Form.Item label="包名" name="packageName">
+              <Form.Item label="包名" name="packagePath">
                 <Input placeholder="com.cn.packagename"></Input>
               </Form.Item>
               {/* <Form.Item>
@@ -304,7 +318,9 @@ export default class Content extends Component {
         </div>
         <div className={styles.footer}>
           <span className="title-font">生成代码</span>
-          <Button type="primary">一键生成</Button>
+          <Button type="primary" onClick={this.generateCode}>
+            一键生成
+          </Button>
         </div>
       </div>
     );

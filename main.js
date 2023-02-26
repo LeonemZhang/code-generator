@@ -11,6 +11,8 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1400,
     height: 800,
+    frame: true,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true, // 如果为false，则不能访问 Node.js 模块
