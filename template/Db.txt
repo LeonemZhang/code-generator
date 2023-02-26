@@ -1,0 +1,39 @@
+package $package_path$.entity;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
+import java.util.Date;
+
+/**
+ * $chinese_name$实体类
+ */
+@Entity
+@Getter
+@Setter
+@FieldNameConstants
+@EntityListeners(AuditingEntityListener.class)
+public class Db$class_name$ {
+$member_param_list$
+
+    /**
+     * 创建时间
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @CreatedDate
+    @Column(updatable = false)
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @LastModifiedDate
+    private Date updateTime;
+}

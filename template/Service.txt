@@ -1,0 +1,24 @@
+package $package_path$.service;
+
+import $package_path$.pojo.PageData;
+import $package_path$.pojo.ToCodeMessage;
+import $package_path$.pojo.req.LongIdWrapper;
+import $package_path$.pojo.req.$class_name_lower_case$.*;
+import $package_path$.pojo.vo.$class_name_lower_case$.$class_name$PagefVo;
+
+import java.util.List;
+
+/**
+ * $chinese_name$Service
+ */
+public interface $class_name$Service {
+    ToCodeMessage<Void> add$class_name$(Add$class_name$Req req);
+
+    ToCodeMessage<Void> delete$class_name$(LongIdWrapper req);
+
+    ToCodeMessage<Void> edit$class_name$(Edit$class_name$Req req);
+
+    ToCodeMessage<$class_name$DetailVo> get$class_name$Detail(LongIdWrapper req);
+
+    ToCodeMessage<PageData<List<$class_name$PageVo>>> get$class_name$Page(Get$class_name$PageReq req);
+}
