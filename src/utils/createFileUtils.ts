@@ -266,7 +266,7 @@ let fieldList: FieldLine[] = [
 let classInfo: ClassInfo = {
     className: "User",
     chineseName: "用户",
-    projectPath: "C:/Users/LeonemZhang/Desktop/project/code-generator/artifact",
+    projectPath: "C:/Users/10480/Desktop/workSpace/code-generator/artifact",
     packagePath: "com.cn.wavetop.mobilegov"
 }
 

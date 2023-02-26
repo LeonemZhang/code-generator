@@ -1,4 +1,13 @@
-import { Button, Popconfirm, Form, Input, Table, Typography } from "antd";
+import {
+  Select,
+  Switch,
+  Button,
+  Popconfirm,
+  Form,
+  Input,
+  Table,
+  Typography,
+} from "antd";
 import { nanoid } from "nanoid";
 import React, { Component } from "react";
 import styles from "./index.module.scss";
@@ -8,34 +17,34 @@ export default class Content extends Component {
     tableData: [
       {
         key: nanoid(),
-        field: "",
-        type: "",
-        nullable: "",
-        default: "",
-        comment: "",
+        field: "id",
+        type: "Long",
+        nullable: false,
+        defaultValue: "1",
+        comment: "id",
       },
     ],
   };
+  componentDidMount = () => {};
   addRow = () => {
     const oldData = this.state.tableData;
     oldData.push({
       key: nanoid(),
       field: "",
       type: "",
-      nullable: "",
-      default: "",
+      nullable: false,
+      defaultValue: "",
       comment: "",
     });
-    console.log(oldData);
     this.setState({ tableData: JSON.parse(JSON.stringify(oldData)) });
   };
   isEditing = (record) => record.key === this.state.editingKey;
   edit = (record) => {
-    this.form.setFieldsValue({
+    this.tableForm.setFieldsValue({
       field: "",
       type: "",
-      nullable: "",
-      default: "",
+      nullable: false,
+      defaultValue: "",
       comment: "",
       ...record,
     });
@@ -46,7 +55,7 @@ export default class Content extends Component {
   };
   save = async (key) => {
     try {
-      const row = await this.form.validateFields();
+      const row = await this.tableForm.validateFields();
       const newData = [...this.state.tableData];
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
@@ -82,10 +91,14 @@ export default class Content extends Component {
       dataIndex: "nullable",
       width: "10%",
       editable: true,
+      render: (_, render) => {
+        const { nullable } = render;
+        return <Switch defaultChecked={nullable} disabled={true} />;
+      },
     },
     {
       title: "默认值",
-      dataIndex: "default",
+      dataIndex: "defaultValue",
       width: "15%",
       editable: true,
     },
@@ -129,13 +142,48 @@ export default class Content extends Component {
     editing,
     dataIndex,
     title,
-    inputType,
     record,
     index,
     children,
     ...restProps
   }) => {
-    const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
+    let inputNode;
+    switch (dataIndex) {
+      case "type":
+        inputNode = (
+          <Select
+            options={[
+              {
+                value: "Long",
+                label: "Long",
+              },
+              {
+                value: "Integer",
+                label: "Integer",
+              },
+              {
+                value: "String",
+                label: "String",
+              },
+              {
+                value: "Boolean",
+                label: "Boolean",
+              },
+              {
+                value: "Date",
+                label: "Date",
+              },
+            ]}
+          />
+        );
+        break;
+      case "nullable":
+        inputNode = <Switch defaultChecked={record.nullable} />;
+        break;
+      default:
+        inputNode = <Input />;
+        break;
+    }
     return (
       <td {...restProps}>
         {editing ? (
@@ -147,9 +195,10 @@ export default class Content extends Component {
             rules={[
               {
                 required: true,
-                message: `Please Input ${title}!`,
+                message: `请输入 ${title}!`,
               },
             ]}
+            valuePropName={dataIndex === "nullable" ? "checked" : undefined}
           >
             {inputNode}
           </Form.Item>
@@ -165,13 +214,14 @@ export default class Content extends Component {
     }
     return {
       ...col,
-      onCell: (record) => ({
-        record,
-        inputType: col.dataIndex === "age" ? "number" : "text",
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: this.isEditing(record),
-      }),
+      onCell: (record) => {
+        return {
+          record,
+          dataIndex: col.dataIndex,
+          title: col.title,
+          editing: this.isEditing(record),
+        };
+      },
     };
   });
   onFinish = (values) => {
@@ -180,8 +230,18 @@ export default class Content extends Component {
   onValuesChange = (changedValues, allValues) => {
     console.log(allValues);
   };
-  getValue = () => {
-    console.log(this.form.getFieldsValue());
+  // getValue = () => {
+  //   console.log(this.tableForm.getFieldsValue());
+  // };
+
+  handleSaveClick = async (event) => {
+    const { dialog } = require("@electron/remote");
+    const result = await dialog.showOpenDialog({
+      properties: ["openDirectory"],
+    });
+    console.log(result.filePaths[0]);
+    console.log(this.classForm);
+    this.classForm.setFieldsValue({ projectPath: result.filePaths[0] });
   };
   render() {
     return (
@@ -190,20 +250,27 @@ export default class Content extends Component {
           <div className={styles.inputcontainer}>
             <Form
               layout="inline"
+              ref={(c) => {
+                this.classForm = c;
+              }}
               onFinish={this.onFinish}
               onValuesChange={this.onValuesChange}
             >
               <Form.Item label="英文类名" name="englishClassName">
-                <Input></Input>
+                <Input placeholder="Class"></Input>
               </Form.Item>
               <Form.Item label="中文类名" name="chineseClassName">
-                <Input></Input>
+                <Input placeholder="中文名"></Input>
               </Form.Item>
               <Form.Item label="项目路径" name="projectPath">
-                <Input></Input>
+                <Input
+                  placeholder="c://User/DeskTop"
+                  onDoubleClick={this.handleSaveClick}
+                ></Input>
               </Form.Item>
+              {/* <Button onClick={this.handleSaveClick}>Save File</Button> */}
               <Form.Item label="包名" name="packageName">
-                <Input></Input>
+                <Input placeholder="com.cn.packagename"></Input>
               </Form.Item>
               {/* <Form.Item>
                 
@@ -214,7 +281,7 @@ export default class Content extends Component {
             <Form
               component={false}
               ref={(c) => {
-                this.form = c;
+                this.tableForm = c;
               }}
             >
               <Table
@@ -234,6 +301,10 @@ export default class Content extends Component {
           </div>
 
           <Button onClick={this.addRow}>添加行</Button>
+        </div>
+        <div className={styles.footer}>
+          <span className="title-font">生成代码</span>
+          <Button type="primary">一键生成</Button>
         </div>
       </div>
     );
