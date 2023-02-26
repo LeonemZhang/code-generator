@@ -1,9 +1,7 @@
-// import * as fs from 'fs';
 const fs = require("fs");
-import { EnumJavaType } from "../constant/javaTypeEnum";
 import {
-  ClassInfo as ClassInfo,
-  FieldLine as FieldLine,
+  ClassInfo,
+  FieldLine,
 } from "../constant/classInfo";
 import {
   generateDbClassMember,
@@ -299,35 +297,35 @@ function createPageVoJavaFile(
 let fieldList: FieldLine[] = [
   {
     field: "id",
-    type: EnumJavaType.Long,
+    type: "Long",
     nullable: false,
     defaultValue: "",
     comment: "id",
   },
   {
     field: "name",
-    type: EnumJavaType.String,
+    type: "String",
     nullable: false,
     defaultValue: "",
     comment: "名称",
   },
   {
     field: "age",
-    type: EnumJavaType.Integer,
+    type: "Integer",
     nullable: true,
     defaultValue: "22",
     comment: "年龄",
   },
   {
     field: "sex",
-    type: EnumJavaType.String,
+    type: "String",
     nullable: true,
     defaultValue: "",
     comment: "性别",
   },
   {
     field: "phone",
-    type: EnumJavaType.String,
+    type: "String",
     nullable: false,
     defaultValue: "13344445555",
     comment: "手机号",

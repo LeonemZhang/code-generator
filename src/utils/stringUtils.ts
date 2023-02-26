@@ -1,5 +1,4 @@
 import { ClassInfo, FieldLine } from '../constant/classInfo'
-import { EnumJavaType } from '../constant/javaTypeEnum'
 /**
  * 匹配并替换通用的关键字
  * @param data 文件文本数据
@@ -71,7 +70,7 @@ export function generateVoClassMember(fieldList: FieldLine[]): string {
         if (i == 0) {
             str += generateComment(one.comment)
             str += generateVoSwagger(one.comment)
-            str += "    private " + EnumJavaType[one.type] + " " + one.field + ";\n"
+            str += "    private " + one.type + " " + one.field + ";\n"
             str += lineFeed();
         } else {
             str += generateComment(one.comment)
@@ -101,11 +100,11 @@ function generateComment(comment: string): string {
     return str
 }
 
-function generateId(type: EnumJavaType, field: string): string {
+function generateId(type: string, field: string): string {
     let str: string = ""
     str += "    @Id\n"
     str += "    @GeneratedValue(strategy = GenerationType.IDENTITY)\n"
-    str += "    private " + EnumJavaType[type] + " " + field + ";\n"
+    str += "    private " + type + " " + field + ";\n"
 
     return str
 }
@@ -120,21 +119,21 @@ function generateNullable(nullable: Boolean): string {
     return str
 }
 
-function generateField(type: EnumJavaType, field: string, defaultValue: string): string {
+function generateField(type: string, field: string, defaultValue: string): string {
     // private Long Id;
-    let str: string = "    private " + EnumJavaType[type] + " " + field
+    let str: string = "    private " + type + " " + field
     str += generateDefaultValue(type, defaultValue)
 
     return str;
 }
 
-function generateDefaultValue(type: EnumJavaType, defaultValue: string): string {
+function generateDefaultValue(type: string, defaultValue: string): string {
     let str: string = ""
     if (!defaultValue || defaultValue == "") {
         return str += ";\n"
     }
     str += " = "
-    if (EnumJavaType.String == type) {
+    if ("String" == type) {
         str += "\"" + defaultValue + "\""
     } else {
         str += defaultValue
@@ -143,7 +142,7 @@ function generateDefaultValue(type: EnumJavaType, defaultValue: string): string 
     return str += ";\n"
 }
 
-function generateReqSwagger(comment: string, type: EnumJavaType, nullable: Boolean): string {
+function generateReqSwagger(comment: string, type: string, nullable: Boolean): string {
     // @ApiModelProperty(value = "test", required = true, example = "true")
     let str: string = "    @ApiModelProperty(value = \""
     str += comment
@@ -151,23 +150,23 @@ function generateReqSwagger(comment: string, type: EnumJavaType, nullable: Boole
     str += nullable ? "false" : "true"
     str += ", example = "
     switch (type) {
-        case EnumJavaType.Boolean: {
+        case "Boolean": {
             str += "\"true\""
             break
         }
-        case EnumJavaType.Date: {
+        case "Date": {
             str += "\"2023-01-01 10:10:10\""
             break
         }
-        case EnumJavaType.Integer: {
+        case "Integer": {
             str += "\"1\""
             break
         }
-        case EnumJavaType.Long: {
+        case "Long": {
             str += "\"1\""
             break
         }
-        case EnumJavaType.String: {
+        case "String": {
             str += "\"string\""
             break
         }
@@ -178,12 +177,12 @@ function generateReqSwagger(comment: string, type: EnumJavaType, nullable: Boole
 }
 
 // todo 根据类型决定导入的包
-function generateValidation(type: EnumJavaType, comment: string, nullable: Boolean): string {
+function generateValidation(type: string, comment: string, nullable: Boolean): string {
     let str = ""
     if (nullable) {
         return str
     }
-    if (type == EnumJavaType.String) {
+    if (type == "String") {
         str += "    @NotBlank(message = \"" + comment + "不能为空\")\n"
     } else {
         str += "    @NotNull(message = \"" + comment + "不能为空\")\n"

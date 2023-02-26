@@ -1,8 +1,6 @@
-import { EnumJavaType } from "./javaTypeEnum";
-
 export interface FieldLine {
   field: string;
-  type: EnumJavaType;
+  type: string;
   nullable: Boolean;
   defaultValue: string;
   comment: string;
