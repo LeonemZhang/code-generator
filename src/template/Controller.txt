@@ -31,7 +31,7 @@ public class $class_name$Controller {
 
     @ApiOperation(value = "新增$chinese_name$")
     @PostMapping("/add")
-    ToCodeMessage<Void> add$class_name$(@Validated Add$class_name$Req req) {
+    ToCodeMessage<Void> add$class_name$(@RequestBody @Validated Add$class_name$Req req) {
         return $class_name_lower_case$Service.add$class_name$(req);
     }
 
@@ -43,7 +43,7 @@ public class $class_name$Controller {
 
     @ApiOperation(value = "修改$chinese_name$")
     @PostMapping("/edit")
-    ToCodeMessage<Void> edit$class_name$(@Validated Edit$class_name$Req req) {
+    ToCodeMessage<Void> edit$class_name$(@RequestBody @Validated Edit$class_name$Req req) {
         return $class_name_lower_case$Service.edit$class_name$(req);
     }
 

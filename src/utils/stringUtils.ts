@@ -94,7 +94,7 @@ function lineFeed(): string {
 function generateComment(comment: string): string {
     let str: string = ""
     str += "    /**\n"
-    str += "      * " + comment + "\n"
+    str += "     * " + comment + "\n"
     str += "     */\n"
 
     return str

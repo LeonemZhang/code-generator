@@ -28,8 +28,8 @@ $member_param_list$
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
 
-    public static $class_name$DetailfVo of(Db$class_name$ entity) {
-        $class_name$DetailfVo vo = new $class_name$DetailfVo();
+    public static $class_name$DetailVo of(Db$class_name$ entity) {
+        $class_name$DetailVo vo = new $class_name$DetailVo();
         BeanUtils.copyProperties(entity, vo);
         return vo;
     }
