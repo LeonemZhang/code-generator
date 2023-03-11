@@ -1,8 +1,5 @@
 const fs = require("fs");
-import {
-  ClassInfo,
-  FieldLine,
-} from "../constant/classInfo";
+import { ClassInfo, FieldLine } from "../constant/classInfo";
 import {
   generateDbClassMember,
   replaceCommonString,
@@ -293,52 +290,5 @@ function createPageVoJavaFile(
     });
   });
 }
-
-let fieldList: FieldLine[] = [
-  {
-    field: "id",
-    type: "Long",
-    nullable: false,
-    defaultValue: "",
-    comment: "id",
-  },
-  {
-    field: "name",
-    type: "String",
-    nullable: false,
-    defaultValue: "",
-    comment: "名称",
-  },
-  {
-    field: "age",
-    type: "Integer",
-    nullable: true,
-    defaultValue: "22",
-    comment: "年龄",
-  },
-  {
-    field: "sex",
-    type: "String",
-    nullable: true,
-    defaultValue: "",
-    comment: "性别",
-  },
-  {
-    field: "phone",
-    type: "String",
-    nullable: false,
-    defaultValue: "13344445555",
-    comment: "手机号",
-  },
-];
-
-let classInfo: ClassInfo = {
-  className: "User",
-  chineseName: "用户",
-  projectPath: "C:/Users/10480/Desktop/workSpace/code-generator/artifact",
-  packagePath: "com.cn.wavetop.mobilegov",
-};
-
-// createJavaFile(classInfo, fieldList)
 
 export { createJavaFile };

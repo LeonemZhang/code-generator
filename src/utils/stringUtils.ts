@@ -29,7 +29,7 @@ export function generateDbClassMember(fieldList: FieldLine[]): string {
             str += lineFeed();
         } else {
             str += generateComment(one.comment)
-            str += generateNullable(one.nullable)
+            str += generateDbConstraint(one.nullable, one.unique)
             str += generateField(one.type, one.field, one.defaultValue)
             str += lineFeed();
         }
@@ -94,7 +94,7 @@ function lineFeed(): string {
 function generateComment(comment: string): string {
     let str: string = ""
     str += "    /**\n"
-    str += "      * " + comment + "\n"
+    str += "     * " + comment + "\n"
     str += "     */\n"
 
     return str
@@ -109,14 +109,9 @@ function generateId(type: string, field: string): string {
     return str
 }
 
-function generateNullable(nullable: Boolean): string {
-    // @Column(nullable = false)
-    let str: string = ""
-    if (!nullable) {
-        str += "    @Column(nullable = false)\n"
-    }
-
-    return str
+function generateDbConstraint(nullable: Boolean, unique: Boolean): string {
+    // @Column(nullable = false, unique = true)
+    return "    @Column(nullable = " + nullable + ", unique = " + unique + ")\n"
 }
 
 function generateField(type: string, field: string, defaultValue: string): string {
@@ -135,6 +130,8 @@ function generateDefaultValue(type: string, defaultValue: string): string {
     str += " = "
     if ("String" == type) {
         str += "\"" + defaultValue + "\""
+    } else if ("Long" == type) {
+        str += "\"" + defaultValue + "L\""
     } else {
         str += defaultValue
     }

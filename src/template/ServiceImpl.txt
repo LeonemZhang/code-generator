@@ -49,8 +49,8 @@ public class $class_name$ServiceImpl implements $class_name$Service {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ToCodeMessage<Void> delete$class_name$(LongIdWrapper req) {
-        Db$class_name$ entity = $class_name_lower_case$Dao.findOne($class_name_lower_case$Id);
-        Assert.notNull(entity, "$chinese_name$不存在")
+        Db$class_name$ entity = $class_name_lower_case$Dao.findOne(req.getId());
+        Assert.notNull(entity, "$chinese_name$不存在");
         $class_name_lower_case$Dao.delete(entity);
 
         return ToCodeMessage.ofSuccess(null);
@@ -72,11 +72,11 @@ public class $class_name$ServiceImpl implements $class_name$Service {
         Db$class_name$ entity = $class_name_lower_case$Dao.findOne(req.getId());
         Assert.notNull(entity, "$chinese_name$不存在");
 
-        return ToCodeMessage.ofSuccess($class_name$DetailVo.of(eneity));
+        return ToCodeMessage.ofSuccess($class_name$DetailVo.of(entity));
     }
 
     @Override
-    public ToCodeMessage<PageData<List<$class_name$PageVo>>> get$class_name$Page(final Get$class_name$ListReq req) {
+    public ToCodeMessage<PageData<List<$class_name$PageVo>>> get$class_name$Page(final Get$class_name$PageReq req) {
         Page<Db$class_name$> list = $class_name_lower_case$Dao.findAll(
                 new Specification<Db$class_name$>() {
                     @Override

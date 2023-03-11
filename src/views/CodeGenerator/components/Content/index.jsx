@@ -21,6 +21,7 @@ export default class Content extends Component {
         field: "id",
         type: "Long",
         nullable: false,
+        unique: true,
         defaultValue: "1",
         comment: "id",
       },
@@ -50,10 +51,11 @@ export default class Content extends Component {
   };
   componentDidMount = () => {
     this.classForm.setFieldsValue({
-      className: "",
-      chineseName: "",
-      projectPath: "",
-      packagePath: "",
+      className: "MyClass",
+      chineseName: "我的类",
+      projectPath:
+        "D:/even_code/mobilegov/mobilegov/src/main/java/com/cn/wavetop/mobilegov",
+      packagePath: "com.cn.wavetop.mobilegov",
     });
   };
   addRow = () => {
@@ -63,6 +65,7 @@ export default class Content extends Component {
       field: "",
       type: "",
       nullable: false,
+      unique: false,
       defaultValue: "",
       comment: "",
     });
@@ -74,6 +77,7 @@ export default class Content extends Component {
       field: "",
       type: "",
       nullable: false,
+      unique: false,
       defaultValue: "",
       comment: "",
       ...record,
@@ -81,6 +85,13 @@ export default class Content extends Component {
     this.setState({ editingKey: record.key });
   };
   cancel = () => {
+    this.setState({ editingKey: "" });
+  };
+  delete = (key) => {
+    const newData = [...this.state.tableData].filter(
+      (item) => item.key !== key
+    );
+    this.setState({ tableData: newData });
     this.setState({ editingKey: "" });
   };
   save = async (key) => {
@@ -107,7 +118,7 @@ export default class Content extends Component {
     {
       title: "类属性名",
       dataIndex: "field",
-      width: "20%",
+      width: "18%",
       editable: true,
     },
     {
@@ -117,13 +128,23 @@ export default class Content extends Component {
       editable: true,
     },
     {
-      title: "是否为空",
+      title: "是否允许为空",
       dataIndex: "nullable",
       width: "10%",
       editable: true,
       render: (_, render) => {
         const { nullable } = render;
         return <Switch defaultChecked={nullable} disabled={true} />;
+      },
+    },
+    {
+      title: "是否唯一",
+      dataIndex: "unique",
+      width: "10%",
+      editable: true,
+      render: (_, render) => {
+        const { unique } = render;
+        return <Switch defaultChecked={unique} disabled={true} />;
       },
     },
     {
@@ -135,7 +156,7 @@ export default class Content extends Component {
     {
       title: "注释",
       dataIndex: "comment",
-      width: "20%",
+      width: "15%",
       editable: true,
     },
     {
@@ -153,13 +174,22 @@ export default class Content extends Component {
             >
               保存
             </Typography.Link>
+
             <Popconfirm
               title="确认取消?"
               onConfirm={this.cancel}
               okText="确定"
               cancelText="取消"
             >
-              <a>取消</a>
+              <a style={{ marginRight: "10px" }}>取消</a>
+            </Popconfirm>
+
+            <Popconfirm
+              title="确认删除?"
+              onConfirm={() => this.delete(record.key)}
+              okText="确定"
+            >
+              <a style={{ marginRight: "10px", color: "red" }}>删除</a>
             </Popconfirm>
           </span>
         ) : (
@@ -190,6 +220,9 @@ export default class Content extends Component {
       case "nullable":
         inputNode = <Switch defaultChecked={record.nullable} />;
         break;
+      case "unique":
+        inputNode = <Switch defaultChecked={record.unique} />;
+        break;
       default:
         inputNode = <Input />;
         break;
@@ -204,11 +237,13 @@ export default class Content extends Component {
             }}
             rules={[
               {
-                required: true,
+                required: ["field", "type"].includes(dataIndex) ? true : false,
                 message: `请输入 ${title}!`,
               },
             ]}
-            valuePropName={dataIndex === "nullable" ? "checked" : undefined}
+            valuePropName={
+              ["nullable", "unique"].includes(dataIndex) ? "checked" : undefined
+            }
           >
             {inputNode}
           </Form.Item>
@@ -280,7 +315,7 @@ export default class Content extends Component {
               </Form.Item>
               <Form.Item label="项目路径" name="projectPath">
                 <Input
-                  placeholder="c://User/DeskTop"
+                  placeholder="C:\Users\user\Desktop"
                   onDoubleClick={this.handleSaveClick}
                 ></Input>
               </Form.Item>

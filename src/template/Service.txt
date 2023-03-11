@@ -4,7 +4,7 @@ import $package_path$.pojo.PageData;
 import $package_path$.pojo.ToCodeMessage;
 import $package_path$.pojo.req.LongIdWrapper;
 import $package_path$.pojo.req.$class_name_lower_case$.*;
-import $package_path$.pojo.vo.$class_name_lower_case$.$class_name$PagefVo;
+import $package_path$.pojo.vo.$class_name_lower_case$.*;
 
 import java.util.List;
 

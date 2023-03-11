@@ -2,6 +2,7 @@ export interface FieldLine {
   field: string;
   type: string;
   nullable: Boolean;
+  unique: Boolean;
   defaultValue: string;
   comment: string;
 }
