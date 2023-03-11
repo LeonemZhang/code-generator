@@ -25,13 +25,35 @@ export default class Content extends Component {
         comment: "id",
       },
     ],
+    dataTypeArray: [
+      {
+        value: "Long",
+        label: "Long",
+      },
+      {
+        value: "Integer",
+        label: "Integer",
+      },
+      {
+        value: "String",
+        label: "String",
+      },
+      {
+        value: "Boolean",
+        label: "Boolean",
+      },
+      {
+        value: "Date",
+        label: "Date",
+      },
+    ],
   };
   componentDidMount = () => {
     this.classForm.setFieldsValue({
-      className: "MyClass",
-      chineseName: "我的类",
-      projectPath: "C:\\Users\\10480\\Desktop\\workSpace\\artifact",
-      packagePath: "com.cn.cnm",
+      className: "",
+      chineseName: "",
+      projectPath: "",
+      packagePath: "",
     });
   };
   addRow = () => {
@@ -131,7 +153,12 @@ export default class Content extends Component {
             >
               保存
             </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={this.cancel}>
+            <Popconfirm
+              title="确认取消?"
+              onConfirm={this.cancel}
+              okText="确定"
+              cancelText="取消"
+            >
               <a>取消</a>
             </Popconfirm>
           </span>
@@ -158,32 +185,7 @@ export default class Content extends Component {
     let inputNode;
     switch (dataIndex) {
       case "type":
-        inputNode = (
-          <Select
-            options={[
-              {
-                value: "Long",
-                label: "Long",
-              },
-              {
-                value: "Integer",
-                label: "Integer",
-              },
-              {
-                value: "String",
-                label: "String",
-              },
-              {
-                value: "Boolean",
-                label: "Boolean",
-              },
-              {
-                value: "Date",
-                label: "Date",
-              },
-            ]}
-          />
-        );
+        inputNode = <Select options={this.state.dataTypeArray} />;
         break;
       case "nullable":
         inputNode = <Switch defaultChecked={record.nullable} />;
@@ -282,13 +284,9 @@ export default class Content extends Component {
                   onDoubleClick={this.handleSaveClick}
                 ></Input>
               </Form.Item>
-              {/* <Button onClick={this.handleSaveClick}>Save File</Button> */}
               <Form.Item label="包名" name="packagePath">
                 <Input placeholder="com.cn.packagename"></Input>
               </Form.Item>
-              {/* <Form.Item>
-                
-              </Form.Item> */}
             </Form>
           </div>
           <div className={styles.tablecontainer}>
