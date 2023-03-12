@@ -183,11 +183,11 @@ export default class Content extends Component {
             >
               <a style={{ marginRight: "10px" }}>取消</a>
             </Popconfirm>
-
             <Popconfirm
               title="确认删除?"
               onConfirm={() => this.delete(record.key)}
               okText="确定"
+              cancelText="取消"
             >
               <a style={{ marginRight: "10px", color: "red" }}>删除</a>
             </Popconfirm>
