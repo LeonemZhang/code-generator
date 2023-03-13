@@ -8,6 +8,15 @@ import {
   Table,
   Typography,
 } from "antd";
+import { MenuOutlined } from "@ant-design/icons";
+import { DndContext } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { nanoid } from "nanoid";
 import { createJavaFile } from "@/utils/createFileUtils.ts";
 import React, { Component } from "react";
@@ -49,72 +58,11 @@ export default class Content extends Component {
       },
     ],
   };
-  componentDidMount = () => {
-    this.classForm.setFieldsValue({
-      className: "MyClass",
-      chineseName: "我的类",
-      projectPath:
-        "D:/even_code/mobilegov/mobilegov/src/main/java/com/cn/wavetop/mobilegov",
-      packagePath: "com.cn.wavetop.mobilegov",
-    });
-  };
-  addRow = () => {
-    const oldData = this.state.tableData;
-    oldData.push({
-      key: nanoid(),
-      field: "",
-      type: "",
-      nullable: false,
-      unique: false,
-      defaultValue: "",
-      comment: "",
-    });
-    this.setState({ tableData: JSON.parse(JSON.stringify(oldData)) });
-  };
-  isEditing = (record) => record.key === this.state.editingKey;
-  edit = (record) => {
-    this.tableForm.setFieldsValue({
-      field: "",
-      type: "",
-      nullable: false,
-      unique: false,
-      defaultValue: "",
-      comment: "",
-      ...record,
-    });
-    this.setState({ editingKey: record.key });
-  };
-  cancel = () => {
-    this.setState({ editingKey: "" });
-  };
-  delete = (key) => {
-    const newData = [...this.state.tableData].filter(
-      (item) => item.key !== key
-    );
-    this.setState({ tableData: newData });
-    this.setState({ editingKey: "" });
-  };
-  save = async (key) => {
-    try {
-      const row = await this.tableForm.validateFields();
-      const newData = [...this.state.tableData];
-      const index = newData.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        this.setState({ tableData: newData, editingKey: "" });
-      } else {
-        newData.push(row);
-        this.setState({ tableData: newData, editingKey: "" });
-      }
-    } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
-    }
-  };
   columns = [
+    {
+      key: "sort",
+      width: "50px",
+    },
     {
       title: "类属性名",
       dataIndex: "field",
@@ -195,7 +143,7 @@ export default class Content extends Component {
         ) : (
           <Typography.Link
             disabled={this.state.editingKey !== ""}
-            onClick={() => this.edit(record)}
+            onClick={(e) => this.edit(record)}
           >
             编辑
           </Typography.Link>
@@ -203,6 +151,122 @@ export default class Content extends Component {
       },
     },
   ];
+  Row = ({ children, ...props }) => {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      setActivatorNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({
+      id: props["data-row-key"],
+    });
+    const style = {
+      ...props.style,
+      transform: CSS.Transform.toString(
+        transform && {
+          ...transform,
+          scaleY: 1,
+        }
+      ),
+      transition,
+      ...(isDragging
+        ? {
+            position: "relative",
+            zIndex: 9999,
+          }
+        : {}),
+    };
+    return (
+      <tr {...props} ref={setNodeRef} style={style} {...attributes}>
+        {React.Children.map(children, (child) => {
+          if (child.key === "sort") {
+            return React.cloneElement(child, {
+              children: (
+                <MenuOutlined
+                  ref={setActivatorNodeRef}
+                  style={{
+                    touchAction: "none",
+                    cursor: "move",
+                  }}
+                  {...listeners}
+                />
+              ),
+            });
+          }
+          return child;
+        })}
+      </tr>
+    );
+  };
+  componentDidMount = () => {
+    this.classForm.setFieldsValue({
+      className: "MyClass",
+      chineseName: "我的类",
+      projectPath:
+        "D:/even_code/mobilegov/mobilegov/src/main/java/com/cn/wavetop/mobilegov",
+      packagePath: "com.cn.wavetop.mobilegov",
+    });
+  };
+  addRow = () => {
+    const oldData = this.state.tableData;
+    oldData.push({
+      key: nanoid(),
+      field: "",
+      type: "",
+      nullable: false,
+      unique: false,
+      defaultValue: "",
+      comment: "",
+    });
+    this.setState({ tableData: JSON.parse(JSON.stringify(oldData)) });
+  };
+  isEditing = (record) => record.key === this.state.editingKey;
+  edit = (record) => {
+    this.tableForm.setFieldsValue({
+      field: "",
+      type: "",
+      nullable: false,
+      unique: false,
+      defaultValue: "",
+      comment: "",
+      ...record,
+    });
+    this.setState({ editingKey: record.key });
+  };
+  cancel = () => {
+    this.setState({ editingKey: "" });
+  };
+  delete = (key) => {
+    const newData = [...this.state.tableData].filter(
+      (item) => item.key !== key
+    );
+    this.setState({ tableData: newData });
+    this.setState({ editingKey: "" });
+  };
+  save = async (key) => {
+    try {
+      const row = await this.tableForm.validateFields();
+      const newData = [...this.state.tableData];
+      const index = newData.findIndex((item) => key === item.key);
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1, {
+          ...item,
+          ...row,
+        });
+        this.setState({ tableData: newData, editingKey: "" });
+      } else {
+        newData.push(row);
+        this.setState({ tableData: newData, editingKey: "" });
+      }
+    } catch (errInfo) {
+      console.log("Validate Failed:", errInfo);
+    }
+  };
+
   EditableCell = ({
     editing,
     dataIndex,
@@ -269,6 +333,19 @@ export default class Content extends Component {
       },
     };
   });
+  onDragEnd = ({ active, over }) => {
+    if (active.id !== over?.id) {
+      // setDataSource((prev) => {
+      //   const activeIndex = prev.findIndex((i) => i.key === active.id);
+      //   const overIndex = prev.findIndex((i) => i.key === over?.id);
+      //   return arrayMove(prev, activeIndex, overIndex);
+      // });
+      const prev = this.state.tableData;
+      const activeIndex = prev.findIndex((i) => i.key === active.id);
+      const overIndex = prev.findIndex((i) => i.key === over?.id);
+      this.setState({ tableData: arrayMove(prev, activeIndex, overIndex) });
+    }
+  };
   onFinish = (values) => {
     // console.log(values);
   };
@@ -331,19 +408,29 @@ export default class Content extends Component {
                 this.tableForm = c;
               }}
             >
-              <Table
-                components={{
-                  body: {
-                    cell: this.EditableCell,
-                  },
-                }}
-                bordered
-                dataSource={this.state.tableData}
-                columns={this.mergedColumns}
-                rowClassName={styles.editablerow}
-                pagination={false}
-                scroll={{ y: "calc(100vh - 500px)" }}
-              ></Table>
+              <DndContext onDragEnd={this.onDragEnd}>
+                <SortableContext
+                  // rowKey array
+                  items={this.state.tableData.map((i) => i.key)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <Table
+                    components={{
+                      body: {
+                        cell: this.EditableCell,
+                        row: this.Row,
+                      },
+                    }}
+                    rowKey="key"
+                    bordered
+                    dataSource={this.state.tableData}
+                    columns={this.mergedColumns}
+                    rowClassName={styles.editablerow}
+                    pagination={false}
+                    scroll={{ y: "calc(100vh - 500px)" }}
+                  ></Table>
+                </SortableContext>
+              </DndContext>
             </Form>
           </div>
 
