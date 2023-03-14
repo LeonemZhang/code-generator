@@ -1,5 +1,8 @@
 const fs = require("fs");
-const templatePath = "resources/app.asar.unpacked/src/template";
+const isDev = process.env.IS_DEV === "true";
+const templatePath = `${
+  isDev ? "src/template" : "resources/app.asar.unpacked/src/template"
+}`;
 import { ClassInfo, FieldLine } from "../constant/classInfo";
 import {
   generateDbClassMember,
@@ -21,7 +24,7 @@ function mkdirIfNotExist(classInfo: ClassInfo): void {
     projectPath + "/service/impl",
     projectPath + "/dao",
     projectPath + "/entity",
-    projectPath + "/pojo/" + classNameLowerCase
+    projectPath + "/pojo/" + classNameLowerCase,
   ];
 
   for (let one of pathArr) {
