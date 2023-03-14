@@ -21,8 +21,7 @@ function mkdirIfNotExist(classInfo: ClassInfo): void {
     projectPath + "/service/impl",
     projectPath + "/dao",
     projectPath + "/entity",
-    projectPath + "/pojo/req/" + classNameLowerCase,
-    projectPath + "/pojo/vo/" + classNameLowerCase,
+    projectPath + "/pojo/" + classNameLowerCase
   ];
 
   for (let one of pathArr) {

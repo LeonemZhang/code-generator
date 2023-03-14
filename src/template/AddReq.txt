@@ -1,4 +1,4 @@
-package $package_path$.pojo.req.$class_name_lower_case$;
+package $package_path$.pojo.$class_name_lower_case$;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
