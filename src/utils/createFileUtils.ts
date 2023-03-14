@@ -1,15 +1,8 @@
 const fs = require("fs");
 const isDev = process.env.IS_DEV === "true";
-const templatePath = `${
-  isDev ? "src/template" : "resources/app.asar.unpacked/src/template"
-}`;
+const templatePath = `${isDev ? "src/template" : "resources/app.asar.unpacked/src/template"}`;
 import { ClassInfo, FieldLine } from "../constant/classInfo";
-import {
-  generateDbClassMember,
-  replaceCommonString,
-  generateAddReqClassMember,
-  generateVoClassMember,
-} from "./stringUtils";
+import { generateDbClassMember, replaceCommonString, generateAddReqClassMember, generateVoClassMember } from "./stringUtils";
 import { generateResult } from "../constant/resultInfo";
 
 const memberParamList: string = "$member_param_list$";
@@ -23,7 +16,10 @@ const dao: string = "dao";
 const service: string = "service";
 const serviceImpl: string = "serviceImpl";
 const controller: string = "controller";
-
+const entity: string = "entity";
+const pojo: string = "pojo";
+const dotTxt: string = ".txt";
+const dotJava: string = ".java";
 
 const paramList: string[] = [
   db,
@@ -35,8 +31,9 @@ const paramList: string[] = [
   dao,
   service,
   serviceImpl,
-  controller,
+  controller
 ];
+
 interface funcparam {
   name: string;
   readFilePath: string;
@@ -50,15 +47,13 @@ interface funcparam {
  * @param classInfo 类属性信息
  */
 function mkdirIfNotExist(classInfo: ClassInfo): void {
-  let projectPath = classInfo.projectPath;
-  let classNameLowerCase = classInfo.className.toLowerCase();
   const pathArr = [
-    `projectPath/${controller}`,
-    projectPath + "/service",
-    projectPath + "/service/impl",
-    projectPath + "/dao",
-    projectPath + "/entity",
-    projectPath + "/pojo/" + classNameLowerCase,
+    `${classInfo.projectPath}/${controller}`,
+    `${classInfo.projectPath}/${service}`,
+    `${classInfo.projectPath}/${service}/impl`,
+    `${classInfo.projectPath}/${dao}`,
+    `${classInfo.projectPath}/${entity}`,
+    `${classInfo.projectPath}/${pojo}/${classInfo.className.toLowerCase()}`,
   ];
 
   for (let one of pathArr) {
@@ -68,115 +63,107 @@ function mkdirIfNotExist(classInfo: ClassInfo): void {
   }
 }
 
+/**
+ * 根据类型获取生成文件的参数
+ */
 function convertParam(type: string): funcparam {
   switch (type) {
-    case "db":
+    case db:
       return {
-        name: "createDbJavaFile",
-        readFilePath: `${templatePath}/Db.txt`,
-        // writeFilePath: classInfo.projectPath + "/entity/Db" + classInfo.className + ".java",
+        name: "数据库实体类",
+        readFilePath: `${templatePath}/Db${dotTxt}`,
         writeFilePath: (classInfo: ClassInfo) => {
-          return `${classInfo.projectPath}/entity/Db${classInfo.className}.java`;
+          return `${classInfo.projectPath}/${entity}/Db${classInfo.className}${dotJava}`;
         },
         replaceString: memberParamList,
         replacefunc: generateDbClassMember,
       };
-    case "addReq":
+    case addReq:
       return {
-        name: "createAddReqJavaFile",
-        readFilePath: `${templatePath}/AddReq.txt`,
+        name: "AddReq类",
+        readFilePath: `${templatePath}/AddReq${dotTxt}`,
         writeFilePath: (classInfo: ClassInfo) => {
-          return `${classInfo.projectPath
-            }/pojo/${classInfo.className.toLowerCase()}/Add${classInfo.className
-            }Req.java`;
+          return `${classInfo.projectPath}/${pojo}/${classInfo.className.toLowerCase()}/Add${classInfo.className}Req${dotJava}`;
         },
         replaceString: memberParamList,
         replacefunc: generateAddReqClassMember,
       };
-    case "editReq":
+    case editReq:
       return {
-        name: "createEditReqJavaFile",
-        readFilePath: `${templatePath}/EditReq.txt`,
+        name: "EditReq类",
+        readFilePath: `${templatePath}/EditReq${dotTxt}`,
         writeFilePath: (classInfo: ClassInfo) => {
-          return `${classInfo.projectPath
-            }/pojo/${classInfo.className.toLowerCase()}/Edit${classInfo.className
-            }Req.java`;
+          return `${classInfo.projectPath}/${pojo}/${classInfo.className.toLowerCase()}/Edit${classInfo.className}Req${dotJava}`;
         },
         replaceString: "",
         replacefunc: () => "",
       };
-    case "getPageReq":
+    case getPageReq:
       return {
-        name: "createGetPageReqJavaFile",
-        readFilePath: `${templatePath}/GetPageReq.txt`,
+        name: "GetPageReq类",
+        readFilePath: `${templatePath}/GetPageReq${dotTxt}`,
         writeFilePath: (classInfo: ClassInfo) => {
-          return `${classInfo.projectPath
-            }/pojo/${classInfo.className.toLowerCase()}/Get${classInfo.className
-            }PageReq.java`;
+          return `${classInfo.projectPath}/${pojo}/${classInfo.className.toLowerCase()}/Get${classInfo.className}PageReq${dotJava}`;
         },
         replaceString: "",
         replacefunc: () => "",
       };
-    case "detailVo":
+    case detailVo:
       return {
-        name: "createDetailVoJavaFile",
-        readFilePath: `${templatePath}/DetailVo.txt`,
+        name: "DetailVo类",
+        readFilePath: `${templatePath}/DetailVo${dotTxt}`,
         writeFilePath: (classInfo: ClassInfo) => {
-          return `${classInfo.projectPath
-            }/pojo/${classInfo.className.toLowerCase()}/Get${classInfo.className
-            }DetailVo.java`;
+          return `${classInfo.projectPath}/${pojo}/${classInfo.className.toLowerCase()}/Get${classInfo.className}DetailVo${dotJava}`;
         },
         replaceString: memberParamList,
         replacefunc: generateVoClassMember,
       };
-    case "pageVo":
+    case pageVo:
       return {
-        name: "createPageVoJavaFile",
-        readFilePath: `${templatePath}/PageVo.txt`,
+        name: "PageVo类",
+        readFilePath: `${templatePath}/PageVo${dotTxt}`,
         writeFilePath: (classInfo: ClassInfo) => {
-          return `${classInfo.projectPath
-            }/pojo/${classInfo.className.toLowerCase()}/Get${classInfo.className
-            }PageVo.java`;
+          return `${classInfo.projectPath}/${pojo}/${classInfo.className.toLowerCase()}/Get${classInfo.className}PageVo${dotJava}`;
         },
         replaceString: memberParamList,
         replacefunc: generateVoClassMember,
       };
-    case "dao":
+    case dao:
       return {
-        name: "createDaoJavaFile",
-        readFilePath: `${templatePath}/DbRepository.txt`,
+        name: "Dao类",
+        readFilePath: `${templatePath}/DbRepository${dotTxt}`,
         writeFilePath: (classInfo: ClassInfo) => {
-          return `${classInfo.projectPath}/dao/${classInfo.className}Repository.java`;
+          return `${classInfo.projectPath}/${dao}/${classInfo.className}Repository${dotJava}`;
         },
         replaceString: "",
         replacefunc: () => "",
       };
-    case "service":
+    case service:
       return {
-        name: "createServiceJavaFile",
-        readFilePath: `${templatePath}/Service.txt`,
+        name: "Service类",
+        readFilePath: `${templatePath}/Service${dotTxt}`,
         writeFilePath: (classInfo: ClassInfo) => {
-          return `${classInfo.projectPath}/service/${classInfo.className}Service.java`;
+          return `${classInfo.projectPath}/${service}/${classInfo.className}Service${dotJava}`;
         },
         replaceString: "",
         replacefunc: () => "",
       };
-    case "serviceImpl":
+    case serviceImpl:
       return {
-        name: "createServiceImplJavaFile",
-        readFilePath: `${templatePath}/ServiceImpl.txt`,
+        name: "ServiceImpl类",
+        readFilePath: `${templatePath}/ServiceImpl${dotTxt}`,
         writeFilePath: (classInfo: ClassInfo) => {
-          return `${classInfo.projectPath}/service/impl/${classInfo.className}ServiceImpl.java`;
+          return `${classInfo.projectPath}/${service}/impl/${classInfo.className}ServiceImpl${dotJava}`;
         },
         replaceString: "",
         replacefunc: () => "",
       };
-    case "controller":
+    case controller:
       return {
-        name: "createControllerJavaFile",
-        readFilePath: `${templatePath}/Controller.txt`,
+        name: "Controller类",
+        readFilePath: `${templatePath}/Controller${dotTxt}`,
         writeFilePath: (classInfo: ClassInfo) => {
-          return `${classInfo.projectPath}/controller/${classInfo.className}Controller.java`;
+          return `${classInfo.projectPath}/${controller}/${classInfo.className}Controller${dotJava}`;
         },
         replaceString: "",
         replacefunc: () => "",
@@ -196,46 +183,40 @@ function convertParam(type: string): funcparam {
   }
 }
 
-function createFile(
-  param: funcparam,
-  fieldList: FieldLine[],
-  classInfo: ClassInfo
-): Promise<string> {
-  fs.readFile(param.readFilePath, (err, data) => {
-    if (err) {
-      return Promise.reject(`读取${param.name}文件失败`);
-    }
-
-    let res = replaceCommonString(data.toString(), classInfo);
-
-    if (param.replaceString != "" && param.replacefunc(fieldList) != "") {
-      res = res.replace(`${param.replaceString}`, param.replacefunc(fieldList));
-    }
-
-    fs.writeFile(param.writeFilePath(classInfo), res, "utf-8", (err) => {
+function createFile(param: funcparam, fieldList: FieldLine[], classInfo: ClassInfo): Promise<string> {
+  return new Promise<string>((resolve) => {
+    fs.readFile(param.readFilePath, (err, data) => {
       if (err) {
-        return Promise.reject(`写入${param.name}文件失败`);
+        resolve(`读取${param.name}文件失败`);
+        return;
       }
+
+      let res = replaceCommonString(data.toString(), classInfo);
+
+      if (param.replaceString != "" && param.replacefunc(fieldList) != "") {
+        res = res.replace(`${param.replaceString}`, param.replacefunc(fieldList));
+      }
+
+      fs.writeFile(param.writeFilePath(classInfo), res, "utf-8", (err) => {
+        if (err) {
+          resolve(`写入${param.name}文件失败`);
+        } else {
+          resolve(`写入${param.name}文件成功`);
+        }
+      });
     });
   });
-  return Promise.resolve(`写入${param.name}文件成功`);
 }
 
 /* 创建java文件
  * @param classInfo 类属性信息
  */
-async function createJavaFile(
-  classInfo: ClassInfo,
-  fieldList: FieldLine[]
-): Promise<generateResult> {
+async function mkdirAndCreateAllFile(classInfo: ClassInfo, fieldList: FieldLine[]): Promise<generateResult> {
   mkdirIfNotExist(classInfo);
 
-  const responseResult = await Promise.all(
-    paramList.map((one) => createFile(convertParam(one), fieldList, classInfo))
-  );
+  const responseResult = await Promise.all(paramList.map((one) => createFile(convertParam(one), fieldList, classInfo)));
 
   const resultInfo: generateResult = {
-    code: true,
     success: [],
     failure: [],
   };
@@ -243,7 +224,6 @@ async function createJavaFile(
   for (let one of responseResult) {
     if (one.includes("失败")) {
       resultInfo.failure.push(one);
-      resultInfo.code = false;
     } else {
       resultInfo.success.push(one);
     }
@@ -252,258 +232,6 @@ async function createJavaFile(
   return new Promise((resolve) => {
     resolve(resultInfo);
   });
-  // createDbJavaFile(classInfo, fieldList);
-  // createDaoJavaFile(classInfo);
-  // createControllerJavaFile(classInfo);
-  // createServiceJavaFile(classInfo);
-  // createServiceImplJavaFile(classInfo);
-  // createAddReqJavaFile(classInfo, fieldList);
-  // createEditReqJavaFile(classInfo);
-  // createGetPageReqJavaFile(classInfo);
-  // createDetailVoJavaFile(classInfo, fieldList);
-  // createPageVoJavaFile(classInfo, fieldList);
 }
 
-// /**
-//  * 生成数据库实体类
-//  */
-// function createDbJavaFile(classInfo: ClassInfo, fieldList: FieldLine[]): void {
-//   fs.readFile`"${templatePath}/Db.txt", (err, data) =>`{
-//     if (err) {
-//       throw new Error("读取实体模板失败");
-//     }
-
-//     let res = replaceCommonString(data.toString(), classInfo);
-//     res = res.replace(memberParamList, generateDbClassMember(fieldList));
-//     let fullPath =
-//       classInfo.projectPath + "/entity/Db" + classInfo.className + ".java";
-//     fs.writeFile(fullPath, res, "utf-8", (err) => {
-//       !!err ? console.log(err) : console.log("生成数据库实体类成功");
-//     });
-//   });
-// }
-
-// /**
-//  * 生成实体Dao类
-//  */
-// function createDaoJavaFile(classInfo: ClassInfo): void {
-//   fs.readFile`"${templatePath}/DbRepository.txt", (err, data) =>`{
-//     if (err) {
-//       console.log(err);
-//       return;
-//     }
-
-//     let res = replaceCommonString(data.toString(), classInfo);
-//     let fullPath =
-//       classInfo.projectPath +
-//       "/dao/Db" +
-//       classInfo.className +
-//       "Repository.java";
-//     fs.writeFile(fullPath, res, "utf-8", (err) => {
-//       !!err ? console.log(err) : console.log("生成实体Dao类成功");
-//     });
-//   });
-// }
-
-// /**
-//  * 生成Controller类
-//  */
-// function createControllerJavaFile(classInfo: ClassInfo): void {
-//   fs.readFile`"${templatePath}/Controller.txt", (err, data) =>`{
-//     if (err) {
-//       console.log(err);
-//       return;
-//     }
-
-//     let res = replaceCommonString(data.toString(), classInfo);
-//     let fullPath =
-//       classInfo.projectPath +
-//       "/controller/" +
-//       classInfo.className +
-//       "Controller.java";
-//     fs.writeFile(fullPath, res, "utf-8", (err) => {
-//       !!err ? console.log(err) : console.log("生成Controller类成功");
-//     });
-//   });
-// }
-
-// /**
-//  * 生成Service类
-//  */
-// function createServiceJavaFile(classInfo: ClassInfo): void {
-//   fs.readFile`"${templatePath}/Service.txt", (err, data) =>`{
-//     if (err) {
-//       console.log(err);
-//       return;
-//     }
-
-//     let res = replaceCommonString(data.toString(), classInfo);
-//     let fullPath =
-//       classInfo.projectPath +
-//       "/service/" +
-//       classInfo.className +
-//       "Service.java";
-//     fs.writeFile(fullPath, res, "utf-8", (err) => {
-//       !!err ? console.log(err) : console.log("生成Service类成功");
-//     });
-//   });
-// }
-
-// /**
-//  * 生成ServiceImpl类
-//  */
-// function createServiceImplJavaFile(classInfo: ClassInfo): void {
-//   fs.readFile`"${templatePath}/ServiceImpl.txt", (err, data) =>`{
-//     if (err) {
-//       console.log(err);
-//       return;
-//     }
-
-//     let res = replaceCommonString(data.toString(), classInfo);
-//     let fullPath =
-//       classInfo.projectPath +
-//       "/service/impl/" +
-//       classInfo.className +
-//       "ServiceImpl.java";
-//     fs.writeFile(fullPath, res, "utf-8", (err) => {
-//       !!err ? console.log(err) : console.log("生成ServiceImpl类成功");
-//     });
-//   });
-// }
-
-// /**
-//  * 生成AddReq类
-//  */
-// function createAddReqJavaFile(
-//   classInfo: ClassInfo,
-//   fieldList: FieldLine[]
-// ): void {
-//   fs.readFile`"${templatePath}/AddReq.txt", (err, data) =>`{
-//     if (err) {
-//       console.log(err);
-//       return;
-//     }
-
-//     let res = replaceCommonString(data.toString(), classInfo);
-//     res = res.replace(
-//       memberParamList,
-//       generateAddReqClassMember(fieldList)
-//     );
-//     let fullPath =
-//       classInfo.projectPath +
-//       "/pojo/req/" +
-//       classInfo.className.toLowerCase() +
-//       "/Add" +
-//       classInfo.className +
-//       "Req.java";
-//     fs.writeFile(fullPath, res, "utf-8", (err) => {
-//       !!err ? console.log(err) : console.log("生成AddReq类成功");
-//     });
-//   });
-// }
-
-// /**
-//  * 生成EditReq类
-//  */
-// function createEditReqJavaFile(classInfo: ClassInfo): void {
-//   fs.readFile`"${templatePath}/EditReq.txt", (err, data) =>`{
-//     if (err) {
-//       console.log(err);
-//       return;
-//     }
-
-//     let res = replaceCommonString(data.toString(), classInfo);
-//     let fullPath =
-//       classInfo.projectPath +
-//       "/pojo/req/" +
-//       classInfo.className.toLowerCase() +
-//       "/Edit" +
-//       classInfo.className +
-//       "Req.java";
-//     fs.writeFile(fullPath, res, "utf-8", (err) => {
-//       !!err ? console.log(err) : console.log("生成EditReq类成功");
-//     });
-//   });
-// }
-
-// /**
-//  * 生成GetPageReq类
-//  */
-// function createGetPageReqJavaFile(classInfo: ClassInfo): void {
-//   fs.readFile`"${templatePath}/GetPageReq.txt", (err, data) =>`{
-//     if (err) {
-//       console.log(err);
-//       return;
-//     }
-
-//     let res = replaceCommonString(data.toString(), classInfo);
-//     let fullPath =
-//       classInfo.projectPath +
-//       "/pojo/req/" +
-//       classInfo.className.toLowerCase() +
-//       "/Get" +
-//       classInfo.className +
-//       "PageReq.java";
-//     fs.writeFile(fullPath, res, "utf-8", (err) => {
-//       !!err ? console.log(err) : console.log("生成GetPageReq类成功");
-//     });
-//   });
-// }
-
-// /**
-//  * 生成DetailVo类
-//  */
-// function createDetailVoJavaFile(
-//   classInfo: ClassInfo,
-//   fieldList: FieldLine[]
-// ): void {
-//   fs.readFile`"${templatePath}/DetailVo.txt", (err, data) =>`{
-//     if (err) {
-//       console.log(err);
-//       return;
-//     }
-
-//     let res = replaceCommonString(data.toString(), classInfo);
-//     res = res.replace(memberParamList, generateVoClassMember(fieldList));
-//     let fullPath =
-//       classInfo.projectPath +
-//       "/pojo/vo/" +
-//       classInfo.className.toLowerCase() +
-//       "/" +
-//       classInfo.className +
-//       "DetailVo.java";
-//     fs.writeFile(fullPath, res, "utf-8", (err) => {
-//       !!err ? console.log(err) : console.log("生成DetailVo类成功");
-//     });
-//   });
-// }
-
-// /**
-//  * 生成PageVo类
-//  */
-// function createPageVoJavaFile(
-//   classInfo: ClassInfo,
-//   fieldList: FieldLine[]
-// ): void {
-//   fs.readFile`"${templatePath}/PageVo.txt", async (err, data) =>`{
-//     if (err) {
-//       console.log(err);
-//       return;
-//     }
-
-//     let res = replaceCommonString(data.toString(), classInfo);
-//     res = res.replace(memberParamList, generateVoClassMember(fieldList));
-//     let fullPath =
-//       classInfo.projectPath +
-//       "/pojo/vo/" +
-//       classInfo.className.toLowerCase() +
-//       "/" +
-//       classInfo.className +
-//       "PageVo.java";
-//     fs.writeFile(fullPath, res, "utf-8", (err) => {
-//       !!err ? console.log(err) : console.log("生成PageVo类成功");
-//     });
-//   });
-// }
-
-export { createJavaFile };
+export { mkdirAndCreateAllFile as mkdirAndCreateAllFile };
