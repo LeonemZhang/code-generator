@@ -1,0 +1,36 @@
+package $package_path$.pojo.$class_name_lower_case$;
+
+import $package_path$.entity.Db$class_name$;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.BeanUtils;
+
+import java.util.Date;
+
+/**
+ * $chinese_name$分页查询返回对象
+ */
+@Getter
+@Setter
+public class $class_name$PageVo {
+$member_param_list$
+
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty(value = "创建时间")
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @ApiModelProperty(value = "更新时间")
+    private Date updateTime;
+    
+    public static $class_name$PageVo of(Db$class_name$ entity) {
+        $class_name$PageVo vo = new $class_name$PageVo();
+        BeanUtils.copyProperties(entity, vo);
+        return vo;
+    }
+}

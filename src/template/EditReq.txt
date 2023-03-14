@@ -1,0 +1,21 @@
+package $package_path$.pojo.$class_name_lower_case$;
+
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
+
+/**
+ * $chinese_name$编辑请求类
+ */
+@Getter
+@Setter
+public class Edit$class_name$Req extends Add$class_name$Req {
+    /**
+     * $chinese_name$id
+     */
+    @ApiModelProperty(value = "$chinese_name$id", required = true, example = "1")
+    @NotNull(message = "$chinese_name$id不能为空")
+    private Long id;
+}

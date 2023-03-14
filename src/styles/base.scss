@@ -1,0 +1,19 @@
+// 功能类
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.common-font {
+  font-size: 16px;
+  color: rgb(38, 45, 56);
+}
+.title-font {
+  @extend .common-font;
+  @extend .font-bold;
+  font-size: 22px;
+}
+.font-bold {
+  font-weight: bold;
+}

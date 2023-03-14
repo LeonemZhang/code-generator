@@ -1,0 +1,18 @@
+package $package_path$.pojo.$class_name_lower_case$;
+
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.validator.constraints.NotBlank;
+
+import java.util.Date;
+import javax.validation.constraints.NotNull;
+
+/**
+ * 添加$chinese_name$请求类
+ */
+@Getter
+@Setter
+public class Add$class_name$Req {
+$member_param_list$
+}

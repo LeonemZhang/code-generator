@@ -1,0 +1,99 @@
+package $package_path$.service.impl;
+
+import $package_path$.dao.Db$class_name$Repository;
+import $package_path$.entity.Db$class_name$;
+import $package_path$.pojo.PageData;
+import $package_path$.pojo.ToCodeMessage;
+import $package_path$.pojo.LongIdWrapper;
+import $package_path$.pojo.$class_name_lower_case$.*;
+import $package_path$.pojo.$class_name_lower_case$.*;
+import $package_path$.service.$class_name$Service;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * $chinese_name$ServiceImpl
+ */
+@Service
+@Slf4j
+public class $class_name$ServiceImpl implements $class_name$Service {
+    @Autowired
+    private Db$class_name$Repository $class_name_lower_case$Dao;
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ToCodeMessage<Void> add$class_name$(Add$class_name$Req req) {
+        Db$class_name$ entity = new Db$class_name$();
+        BeanUtils.copyProperties(req, entity);
+        $class_name_lower_case$Dao.save(entity);
+
+        return ToCodeMessage.ofSuccess(null);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ToCodeMessage<Void> delete$class_name$(LongIdWrapper req) {
+        Db$class_name$ entity = $class_name_lower_case$Dao.findOne(req.getId());
+        Assert.notNull(entity, "$chinese_name$不存在");
+        $class_name_lower_case$Dao.delete(entity);
+
+        return ToCodeMessage.ofSuccess(null);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ToCodeMessage<Void> edit$class_name$(Edit$class_name$Req req) {
+        Db$class_name$ entity = $class_name_lower_case$Dao.findOne(req.getId());
+        Assert.notNull(entity, "$chinese_name$不存在");
+        BeanUtils.copyProperties(req, entity);
+        $class_name_lower_case$Dao.save(entity);
+
+        return ToCodeMessage.ofSuccess(null);
+    }
+
+    @Override
+    public ToCodeMessage<$class_name$DetailVo> get$class_name$Detail(LongIdWrapper req) {
+        Db$class_name$ entity = $class_name_lower_case$Dao.findOne(req.getId());
+        Assert.notNull(entity, "$chinese_name$不存在");
+
+        return ToCodeMessage.ofSuccess($class_name$DetailVo.of(entity));
+    }
+
+    @Override
+    public ToCodeMessage<PageData<List<$class_name$PageVo>>> get$class_name$Page(final Get$class_name$PageReq req) {
+        Page<Db$class_name$> list = $class_name_lower_case$Dao.findAll(
+                new Specification<Db$class_name$>() {
+                    @Override
+                    public Predicate toPredicate(Root<Db$class_name$> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                        List<Predicate> predicates = new ArrayList<>();
+
+                        query.orderBy(cb.desc(root.get(Db$class_name$.Fields.createTime)));
+                        return cb.and(predicates.toArray(new Predicate[0]));
+                    }
+                },
+                new PageRequest(req.getPage() - 1, req.getPageSize()));
+
+        List<$class_name$PageVo> res = new ArrayList<>();
+        for (Db$class_name$ entity : list.getContent()) {
+            res.add($class_name$PageVo.of(entity));
+        }
+
+        return ToCodeMessage.ofPageSuccess(res, list.getTotalElements());
+    }
+}
