@@ -1,4 +1,4 @@
-package $package_path$.pojo.vo.$class_name_lower_case$;
+package $package_path$.pojo.$class_name_lower_case$;
 
 import $package_path$.entity.Db$class_name$;
 import io.swagger.annotations.ApiModelProperty;

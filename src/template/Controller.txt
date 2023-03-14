@@ -2,9 +2,9 @@ package $package_path$.controller;
 
 import $package_path$.pojo.PageData;
 import $package_path$.pojo.ToCodeMessage;
-import $package_path$.pojo.req.LongIdWrapper;
-import $package_path$.pojo.req.$class_name_lower_case$.*;
-import $package_path$.pojo.vo.$class_name_lower_case$.*;
+import $package_path$.pojo.LongIdWrapper;
+import $package_path$.pojo$class_name_lower_case$.*;
+import $package_path$.pojo.$class_name_lower_case$.*;
 import $package_path$.service.$class_name$Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
