@@ -1,5 +1,8 @@
 const fs = require("fs");
-const templatePath = "resources/app.asar.unpacked/src/template";
+const isDev = process.env.IS_DEV === "true";
+const templatePath = `${
+  isDev ? "src/template" : "resources/app.asar.unpacked/src/template"
+}`;
 import { ClassInfo, FieldLine } from "../constant/classInfo";
 import {
   generateDbClassMember,

@@ -16,7 +16,7 @@
     "make": "electron-forge make --platform=win32 --arch=x64 --targets=zip",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "electron:build": "yarn build && yarn dist"
+    "electron:build": "cross-env IS_DEV=false yarn build && yarn dist"
   },
   "config": {
     "forge": {
