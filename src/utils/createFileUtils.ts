@@ -9,17 +9,30 @@ import {
 } from "./stringUtils";
 import { generateResult } from "../constant/resultInfo";
 
+const memberParamList: string = "$member_param_list$";
+const db: string = "db";
+const addReq: string = "addReq";
+const editReq: string = "editReq";
+const getPageReq: string = "getPageReq";
+const detailVo: string = "detailVo";
+const pageVo: string = "pageVo";
+const dao: string = "dao";
+const service: string = "service";
+const serviceImpl: string = "serviceImpl";
+const controller: string = "controller";
+
+
 const paramList: string[] = [
-  "db",
-  "addReq",
-  "editReq",
-  "getPageReq",
-  "detailVo",
-  "pageVo",
-  "dao",
-  "service",
-  "serviceImpl",
-  "controller",
+  db,
+  addReq,
+  editReq,
+  getPageReq,
+  detailVo,
+  pageVo,
+  dao,
+  service,
+  serviceImpl,
+  controller,
 ];
 interface funcparam {
   name: string;
@@ -37,7 +50,7 @@ function mkdirIfNotExist(classInfo: ClassInfo): void {
   let projectPath = classInfo.projectPath;
   let classNameLowerCase = classInfo.className.toLowerCase();
   const pathArr = [
-    projectPath + "/controller",
+    `projectPath/${controller}`,
     projectPath + "/service",
     projectPath + "/service/impl",
     projectPath + "/dao",
@@ -62,7 +75,7 @@ function convertParam(type: string): funcparam {
         writeFilePath: (classInfo: ClassInfo) => {
           return `${classInfo.projectPath}/entity/Db${classInfo.className}.java`;
         },
-        replaceString: "$member_param_list$",
+        replaceString: memberParamList,
         replacefunc: generateDbClassMember,
       };
     case "addReq":
@@ -70,9 +83,11 @@ function convertParam(type: string): funcparam {
         name: "createAddReqJavaFile",
         readFilePath: `${templatePath}/AddReq.txt`,
         writeFilePath: (classInfo: ClassInfo) => {
-          return `${classInfo.projectPath}/pojo/${classInfo.className.toLowerCase()}/Add${classInfo.className}Req.java`;
+          return `${classInfo.projectPath
+            }/pojo/${classInfo.className.toLowerCase()}/Add${classInfo.className
+            }Req.java`;
         },
-        replaceString: "$member_param_list$",
+        replaceString: memberParamList,
         replacefunc: generateAddReqClassMember,
       };
     case "editReq":
@@ -84,7 +99,7 @@ function convertParam(type: string): funcparam {
             }/pojo/${classInfo.className.toLowerCase()}/Edit${classInfo.className
             }Req.java`;
         },
-        replaceString: "$member_param_list$",
+        replaceString: "",
         replacefunc: () => "",
       };
     case "getPageReq":
@@ -96,7 +111,7 @@ function convertParam(type: string): funcparam {
             }/pojo/${classInfo.className.toLowerCase()}/Get${classInfo.className
             }PageReq.java`;
         },
-        replaceString: "$member_param_list$",
+        replaceString: "",
         replacefunc: () => "",
       };
     case "detailVo":
@@ -108,7 +123,7 @@ function convertParam(type: string): funcparam {
             }/pojo/${classInfo.className.toLowerCase()}/Get${classInfo.className
             }DetailVo.java`;
         },
-        replaceString: "$member_param_list$",
+        replaceString: memberParamList,
         replacefunc: generateVoClassMember,
       };
     case "pageVo":
@@ -120,7 +135,7 @@ function convertParam(type: string): funcparam {
             }/pojo/${classInfo.className.toLowerCase()}/Get${classInfo.className
             }PageVo.java`;
         },
-        replaceString: "$member_param_list$",
+        replaceString: memberParamList,
         replacefunc: generateVoClassMember,
       };
     case "dao":
@@ -130,7 +145,7 @@ function convertParam(type: string): funcparam {
         writeFilePath: (classInfo: ClassInfo) => {
           return `${classInfo.projectPath}/dao/${classInfo.className}Repository.java`;
         },
-        replaceString: "$member_param_list$",
+        replaceString: "",
         replacefunc: () => "",
       };
     case "service":
@@ -140,7 +155,7 @@ function convertParam(type: string): funcparam {
         writeFilePath: (classInfo: ClassInfo) => {
           return `${classInfo.projectPath}/service/${classInfo.className}Service.java`;
         },
-        replaceString: "$member_param_list$",
+        replaceString: "",
         replacefunc: () => "",
       };
     case "serviceImpl":
@@ -150,7 +165,7 @@ function convertParam(type: string): funcparam {
         writeFilePath: (classInfo: ClassInfo) => {
           return `${classInfo.projectPath}/service/impl/${classInfo.className}ServiceImpl.java`;
         },
-        replaceString: "$member_param_list$",
+        replaceString: "",
         replacefunc: () => "",
       };
     case "controller":
@@ -160,7 +175,7 @@ function convertParam(type: string): funcparam {
         writeFilePath: (classInfo: ClassInfo) => {
           return `${classInfo.projectPath}/controller/${classInfo.className}Controller.java`;
         },
-        replaceString: "$member_param_list$",
+        replaceString: "",
         replacefunc: () => "",
       };
 
@@ -189,7 +204,10 @@ function createFile(
     }
 
     let res = replaceCommonString(data.toString(), classInfo);
-    res = res.replace("$member_param_list$", param.replacefunc(fieldList));
+
+    if (param.replaceString != "" && param.replacefunc(fieldList) != "") {
+      res = res.replace(`${param.replaceString}`, param.replacefunc(fieldList));
+    }
 
     fs.writeFile(param.writeFilePath(classInfo), res, "utf-8", (err) => {
       if (err) {
@@ -212,11 +230,13 @@ async function createJavaFile(
   const responseResult = await Promise.all(
     paramList.map((one) => createFile(convertParam(one), fieldList, classInfo))
   );
+
   const resultInfo: generateResult = {
     code: true,
     success: [],
     failure: [],
   };
+
   for (let one of responseResult) {
     if (one.includes("失败")) {
       resultInfo.failure.push(one);
@@ -225,6 +245,7 @@ async function createJavaFile(
       resultInfo.success.push(one);
     }
   }
+
   return new Promise((resolve) => {
     resolve(resultInfo);
   });
@@ -250,7 +271,7 @@ async function createJavaFile(
 //     }
 
 //     let res = replaceCommonString(data.toString(), classInfo);
-//     res = res.replace("$member_param_list$", generateDbClassMember(fieldList));
+//     res = res.replace(memberParamList, generateDbClassMember(fieldList));
 //     let fullPath =
 //       classInfo.projectPath + "/entity/Db" + classInfo.className + ".java";
 //     fs.writeFile(fullPath, res, "utf-8", (err) => {
@@ -362,7 +383,7 @@ async function createJavaFile(
 
 //     let res = replaceCommonString(data.toString(), classInfo);
 //     res = res.replace(
-//       "$member_param_list$",
+//       memberParamList,
 //       generateAddReqClassMember(fieldList)
 //     );
 //     let fullPath =
@@ -440,7 +461,7 @@ async function createJavaFile(
 //     }
 
 //     let res = replaceCommonString(data.toString(), classInfo);
-//     res = res.replace("$member_param_list$", generateVoClassMember(fieldList));
+//     res = res.replace(memberParamList, generateVoClassMember(fieldList));
 //     let fullPath =
 //       classInfo.projectPath +
 //       "/pojo/vo/" +
@@ -468,7 +489,7 @@ async function createJavaFile(
 //     }
 
 //     let res = replaceCommonString(data.toString(), classInfo);
-//     res = res.replace("$member_param_list$", generateVoClassMember(fieldList));
+//     res = res.replace(memberParamList, generateVoClassMember(fieldList));
 //     let fullPath =
 //       classInfo.projectPath +
 //       "/pojo/vo/" +
