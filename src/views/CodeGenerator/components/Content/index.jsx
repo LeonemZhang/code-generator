@@ -1,4 +1,4 @@
-import { Select, Switch, Button, Popconfirm, Form, Input, Table, Typography } from "antd";
+import { Select, Switch, Button, Popconfirm, Form, Input, Table, Typography, message } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { DndContext } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -341,12 +341,11 @@ export default class Content extends Component {
     // });
     const { failure, success } = await mkdirAndCreateAllFile(classInfo, fieldList);
 
-    for (let one of success) {
-      message.success(one);
-    }
-
     for (let one of failure) {
       message.error(one);
+    }
+    for (let one of success) {
+      message.success(one);
     }
   };
 
