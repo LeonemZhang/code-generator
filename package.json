@@ -13,12 +13,45 @@
     "electron:start": "cross-env IS_DEV=false electron-forge start",
     "electron:dev": "cross-env IS_DEV=true electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make --platform=win32 --arch=x64 --targets=zip"
+    "make": "electron-forge make --platform=win32 --arch=x64 --targets=zip",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "electron:build": "yarn build && yarn dist"
   },
   "config": {
     "forge": {
       "arch": "x64"
     }
+  },
+  "build": {
+    "appId": "com.azimiao.test",
+    "asar": true,
+    "directories": {
+      "output": "build"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis"
+        }
+      ],
+      "asarUnpack": [
+        "src/**",
+        "README.md"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "files": [
+      "src/template/**/*",
+      "dist/**/*",
+      "main.js"
+    ]
   },
   "dependencies": {
     "@dnd-kit/core": "^6.0.8",
@@ -26,6 +59,7 @@
     "@dnd-kit/utilities": "^3.2.1",
     "electron-squirrel-startup": "^1.0.0",
     "react": "^18.2.0",
+    "@electron/remote": "^2.0.9",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
@@ -34,7 +68,6 @@
     "@electron-forge/maker-rpm": "^6.0.5",
     "@electron-forge/maker-squirrel": "^6.0.5",
     "@electron-forge/maker-zip": "^6.0.5",
-    "@electron/remote": "^2.0.9",
     "@types/node": "^18.14.1",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",

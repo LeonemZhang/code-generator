@@ -14,7 +14,6 @@ function createWindow() {
     frame: true,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true, // 如果为false，则不能访问 Node.js 模块
       contextIsolation: false, // 如果为true，则需要在 preload 中使用 contextBridge
       enableRemoteModule: true, //开启remote模块
@@ -25,8 +24,8 @@ function createWindow() {
     mainWindow.loadURL("http://localhost:3000");
     mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(path.join(__dirname, "dist", "index.html"));
-    mainWindow.webContents.openDevTools();
+    mainWindow.loadFile(path.join("dist/index.html"));
+    // mainWindow.webContents.openDevTools();
   }
 }
 
