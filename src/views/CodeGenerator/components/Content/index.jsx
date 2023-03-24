@@ -1,24 +1,10 @@
-import {
-  Select,
-  Switch,
-  Button,
-  Popconfirm,
-  Form,
-  Input,
-  Table,
-  Typography,
-} from "antd";
+import { Select, Switch, Button, Popconfirm, Form, Input, Table, Typography, message } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { DndContext } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { nanoid } from "nanoid";
-import { createJavaFile } from "@/utils/createFileUtils.ts";
+import { mkdirAndCreateAllFile } from "@/utils/createFileUtils.ts";
 import React, { Component } from "react";
 import styles from "./index.module.scss";
 export default class Content extends Component {
@@ -82,7 +68,12 @@ export default class Content extends Component {
       editable: true,
       render: (_, render) => {
         const { nullable } = render;
-        return <Switch defaultChecked={nullable} disabled={true} />;
+        return (
+          <Switch
+            defaultChecked={nullable}
+            disabled={true}
+          />
+        );
       },
     },
     {
@@ -92,7 +83,12 @@ export default class Content extends Component {
       editable: true,
       render: (_, render) => {
         const { unique } = render;
-        return <Switch defaultChecked={unique} disabled={true} />;
+        return (
+          <Switch
+            defaultChecked={unique}
+            disabled={true}
+          />
+        );
       },
     },
     {
@@ -152,15 +148,7 @@ export default class Content extends Component {
     },
   ];
   Row = ({ children, ...props }) => {
-    const {
-      attributes,
-      listeners,
-      setNodeRef,
-      setActivatorNodeRef,
-      transform,
-      transition,
-      isDragging,
-    } = useSortable({
+    const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
       id: props["data-row-key"],
     });
     const style = {
@@ -180,7 +168,12 @@ export default class Content extends Component {
         : {}),
     };
     return (
-      <tr {...props} ref={setNodeRef} style={style} {...attributes}>
+      <tr
+        {...props}
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+      >
         {React.Children.map(children, (child) => {
           if (child.key === "sort") {
             return React.cloneElement(child, {
@@ -205,23 +198,28 @@ export default class Content extends Component {
     this.classForm.setFieldsValue({
       className: "MyClass",
       chineseName: "我的类",
-      projectPath:
-        "D:/even_code/mobilegov/mobilegov/src/main/java/com/cn/wavetop/mobilegov",
+      projectPath: "D:/even_code/mobilegov/mobilegov/src/main/java/com/cn/wavetop/mobilegov",
       packagePath: "com.cn.wavetop.mobilegov",
     });
   };
-  addRow = () => {
-    const oldData = this.state.tableData;
-    oldData.push({
-      key: nanoid(),
-      field: "",
-      type: "",
-      nullable: false,
-      unique: false,
-      defaultValue: "",
-      comment: "",
-    });
-    this.setState({ tableData: JSON.parse(JSON.stringify(oldData)) });
+  addRow = async() => {
+    if(this.state.editingKey !== "") {
+      var validate = await this.save(this.state.editingKey);
+    }
+    console.log(validate);
+    if(validate !==false){
+      const newRow = {
+        key: nanoid(),
+        field: "",
+        type: "",
+        nullable: false,
+        unique: false,
+        defaultValue: "",
+        comment: "",
+      }
+      this.setState({ tableData: [...this.state.tableData,newRow] });
+      this.edit(newRow)
+    }
   };
   isEditing = (record) => record.key === this.state.editingKey;
   edit = (record) => {
@@ -240,42 +238,38 @@ export default class Content extends Component {
     this.setState({ editingKey: "" });
   };
   delete = (key) => {
-    const newData = [...this.state.tableData].filter(
-      (item) => item.key !== key
-    );
+    const newData = [...this.state.tableData].filter((item) => item.key !== key);
     this.setState({ tableData: newData });
     this.setState({ editingKey: "" });
   };
-  save = async (key) => {
-    try {
-      const row = await this.tableForm.validateFields();
-      const newData = [...this.state.tableData];
-      const index = newData.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        this.setState({ tableData: newData, editingKey: "" });
-      } else {
-        newData.push(row);
-        this.setState({ tableData: newData, editingKey: "" });
+  save =(key) => {
+    return new Promise(async(resolve, reject) => {
+      try {
+        const row = await this.tableForm.validateFields();
+        const newData = [...this.state.tableData];
+        const index = newData.findIndex((item) => key === item.key);
+        if (index > -1) {
+          const item = newData[index];
+          newData.splice(index, 1, {
+            ...item,
+            ...row,
+          });
+          this.setState({ tableData: newData, editingKey: "" });
+        } else {
+          newData.push(row);
+          this.setState({ tableData: newData, editingKey: "" });
+        }
+        console.log('resolve');
+        resolve(true)
+      } catch (errInfo) {
+        // console.log("Validate Failed:", errInfo);
+        resolve(false)
       }
-    } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
-    }
+    })
+    
   };
 
-  EditableCell = ({
-    editing,
-    dataIndex,
-    title,
-    record,
-    index,
-    children,
-    ...restProps
-  }) => {
+  EditableCell = ({ editing, dataIndex, title, record, index, children, ...restProps }) => {
     let inputNode;
     switch (dataIndex) {
       case "type":
@@ -305,9 +299,7 @@ export default class Content extends Component {
                 message: `请输入 ${title}!`,
               },
             ]}
-            valuePropName={
-              ["nullable", "unique"].includes(dataIndex) ? "checked" : undefined
-            }
+            valuePropName={["nullable", "unique"].includes(dataIndex) ? "checked" : undefined}
           >
             {inputNode}
           </Form.Item>
@@ -352,14 +344,21 @@ export default class Content extends Component {
   onValuesChange = (changedValues, allValues) => {
     // console.log(allValues);
   };
-  generateCode = () => {
+  generateCode = async () => {
     const classInfo = this.classForm.getFieldsValue();
     const fieldList = this.state.tableData;
-    console.log({
-      classInfo,
-      fieldList,
-    });
-    createJavaFile(classInfo, fieldList);
+    // console.log({
+    //   classInfo,
+    //   fieldList,
+    // });
+    const { failure, success } = await mkdirAndCreateAllFile(classInfo, fieldList);
+
+    for (let one of failure) {
+      message.error(one);
+    }
+    for (let one of success) {
+      message.success(one);
+    }
   };
 
   handleSaveClick = async (event) => {
@@ -384,19 +383,31 @@ export default class Content extends Component {
               onFinish={this.onFinish}
               onValuesChange={this.onValuesChange}
             >
-              <Form.Item label="英文类名" name="className">
+              <Form.Item
+                label="英文类名"
+                name="className"
+              >
                 <Input placeholder="Class"></Input>
               </Form.Item>
-              <Form.Item label="中文类名" name="chineseName">
+              <Form.Item
+                label="中文类名"
+                name="chineseName"
+              >
                 <Input placeholder="中文名"></Input>
               </Form.Item>
-              <Form.Item label="项目路径" name="projectPath">
+              <Form.Item
+                label="项目路径"
+                name="projectPath"
+              >
                 <Input
                   placeholder="C:\Users\user\Desktop"
                   onDoubleClick={this.handleSaveClick}
                 ></Input>
               </Form.Item>
-              <Form.Item label="包名" name="packagePath">
+              <Form.Item
+                label="包名"
+                name="packagePath"
+              >
                 <Input placeholder="com.cn.packagename"></Input>
               </Form.Item>
             </Form>
@@ -438,7 +449,10 @@ export default class Content extends Component {
         </div>
         <div className={styles.footer}>
           <span className="title-font">生成代码</span>
-          <Button type="primary" onClick={this.generateCode}>
+          <Button
+            type="primary"
+            onClick={this.generateCode}
+          >
             一键生成
           </Button>
         </div>
