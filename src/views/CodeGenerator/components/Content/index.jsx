@@ -202,18 +202,24 @@ export default class Content extends Component {
       packagePath: "com.cn.wavetop.mobilegov",
     });
   };
-  addRow = () => {
-    const oldData = this.state.tableData;
-    oldData.push({
-      key: nanoid(),
-      field: "",
-      type: "",
-      nullable: false,
-      unique: false,
-      defaultValue: "",
-      comment: "",
-    });
-    this.setState({ tableData: JSON.parse(JSON.stringify(oldData)) });
+  addRow = async() => {
+    if(this.state.editingKey !== "") {
+      var validate = await this.save(this.state.editingKey);
+    }
+    console.log(validate);
+    if(validate !==false){
+      const newRow = {
+        key: nanoid(),
+        field: "",
+        type: "",
+        nullable: false,
+        unique: false,
+        defaultValue: "",
+        comment: "",
+      }
+      this.setState({ tableData: [...this.state.tableData,newRow] });
+      this.edit(newRow)
+    }
   };
   isEditing = (record) => record.key === this.state.editingKey;
   edit = (record) => {
@@ -236,25 +242,31 @@ export default class Content extends Component {
     this.setState({ tableData: newData });
     this.setState({ editingKey: "" });
   };
-  save = async (key) => {
-    try {
-      const row = await this.tableForm.validateFields();
-      const newData = [...this.state.tableData];
-      const index = newData.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        this.setState({ tableData: newData, editingKey: "" });
-      } else {
-        newData.push(row);
-        this.setState({ tableData: newData, editingKey: "" });
+  save =(key) => {
+    return new Promise(async(resolve, reject) => {
+      try {
+        const row = await this.tableForm.validateFields();
+        const newData = [...this.state.tableData];
+        const index = newData.findIndex((item) => key === item.key);
+        if (index > -1) {
+          const item = newData[index];
+          newData.splice(index, 1, {
+            ...item,
+            ...row,
+          });
+          this.setState({ tableData: newData, editingKey: "" });
+        } else {
+          newData.push(row);
+          this.setState({ tableData: newData, editingKey: "" });
+        }
+        console.log('resolve');
+        resolve(true)
+      } catch (errInfo) {
+        // console.log("Validate Failed:", errInfo);
+        resolve(false)
       }
-    } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
-    }
+    })
+    
   };
 
   EditableCell = ({ editing, dataIndex, title, record, index, children, ...restProps }) => {
