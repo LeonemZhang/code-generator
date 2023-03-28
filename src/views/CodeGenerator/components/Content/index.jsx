@@ -198,16 +198,16 @@ export default class Content extends Component {
     this.classForm.setFieldsValue({
       className: "MyClass",
       chineseName: "我的类",
-      projectPath: "D:/even_code/mobilegov/mobilegov/src/main/java/com/cn/wavetop/mobilegov",
-      packagePath: "com.cn.wavetop.mobilegov",
+      projectPath: "C:\\Users\\user\\Desktop\\artifact",
+      packagePath: "com.cn.packagename",
     });
   };
-  addRow = async() => {
-    if(this.state.editingKey !== "") {
+  addRow = async () => {
+    if (this.state.editingKey !== "") {
       var validate = await this.save(this.state.editingKey);
     }
     console.log(validate);
-    if(validate !==false){
+    if (validate !== false) {
       const newRow = {
         key: nanoid(),
         field: "",
@@ -216,9 +216,9 @@ export default class Content extends Component {
         unique: false,
         defaultValue: "",
         comment: "",
-      }
-      this.setState({ tableData: [...this.state.tableData,newRow] });
-      this.edit(newRow)
+      };
+      this.setState({ tableData: [...this.state.tableData, newRow] });
+      this.edit(newRow);
     }
   };
   isEditing = (record) => record.key === this.state.editingKey;
@@ -242,8 +242,8 @@ export default class Content extends Component {
     this.setState({ tableData: newData });
     this.setState({ editingKey: "" });
   };
-  save =(key) => {
-    return new Promise(async(resolve, reject) => {
+  save = (key) => {
+    return new Promise(async (resolve, reject) => {
       try {
         const row = await this.tableForm.validateFields();
         const newData = [...this.state.tableData];
@@ -259,14 +259,13 @@ export default class Content extends Component {
           newData.push(row);
           this.setState({ tableData: newData, editingKey: "" });
         }
-        console.log('resolve');
-        resolve(true)
+        console.log("resolve");
+        resolve(true);
       } catch (errInfo) {
         // console.log("Validate Failed:", errInfo);
-        resolve(false)
+        resolve(false);
       }
-    })
-    
+    });
   };
 
   EditableCell = ({ editing, dataIndex, title, record, index, children, ...restProps }) => {
